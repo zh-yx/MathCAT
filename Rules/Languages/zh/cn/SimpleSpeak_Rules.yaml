@@ -19,51 +19,47 @@
   match: "."
   replace:
   - test:
-      if: "$Verbosity!='Terse'"
-      then: [t: "这"]    # phrase('the' square root of x)
-  - t: "平方根"      # phrase(the 'square root' of x)
-  - test:
-      if: "$Verbosity!='Terse'"
-      then: [t: "的"]   # phrase(the square root 'of' x)
-      else: [pause: short]
-  - x: "*[1]"
-  - test:
       if: "IsNode(*[1], 'leaf') or $Impairment != 'Blindness'"
-      then: [pause: short]
-      else: [t: "根末端的平方根", pause: short]  # phrase(start the square root of x 'end of root')
+      then:
+      - test:
+          if: "$Verbosity!='Terse'"
+          then: [T: "平方根"]   # phrase('平方根' x)
+          else: [T: '根号']   # phrase('根号' x)
+      - x: "*[1]"
+      else:
+      - T: "开"  # phrase('开' x 的平方根)
+      - x: "*[1]"
+      - T: "的平方根"  # phrase(开 x '的平方根')
+  - pause: short
 
 - name: default
   tag: root
   match: "."
   replace:
   - test:
-      if: "$Verbosity!='Terse'"
-      then: [t: "这"]
+      if: "not(IsNode(*[1], 'leaf')) and $Impairment = 'Blindness'"
+      then:
+      - T: "开"      # phrase('开' x + y 的五次方)
+      - x: "*[1]"
+      - test:
+          if: "$Verbosity!='Terse'"
+          then: [T: "的"]      # phrase(开 x + y '的' 五次方)
   - test:
-      if: "*[2][self::m:mn]"
+      if: "*[2][self::m:mn and not(contains(., '.'))]"
       then_test:
       - if: "*[2][text()='2']"
-        then: [t: "平方根"]        # phrase(the 'square root' of x)
+        then: [T: "平方"]      # phrase(开 x + y 的 '平方')
       - else_if: "*[2][text()='3']"
-        then: [t: "立方根"]        # phrase(the 'cube root' of x)
+        then: [T: "立方"]      # phrase(开 x + y 的 '立方')
       - else_if: "*[2][not(contains(., '.'))]"
-        then: [x: "ToOrdinal(*[2])", t: "根"]        # phrase(the square 'root' of x)
+        then: [x: "*[2]", t: "次方"]      # phrase(开 x + y 的 '5' '次方')
       else:
-      - test:
-          if: "*[2][self::m:mi][string-length(.)=1]"
-          then:
-          - x: "*[2]"
-          - pronounce: [{text: "-th"}, {ipa: "θ"}, {sapi5: "th"}, {eloquence: "T"}]
-          else: [x: "*[2]"]
-      - t: "根"        # phrase(the square 'root' of)
-  - test:
-      if: "$Verbosity!='Terse'"
-      then: [t: "的"]        # phrase(the square root 'of' x)
-  - x: "*[1]"
+      - x: "*[2]"
+      - T: "次方"      # phrase(开 x + y 的 N '次方')
   - test:
       if: "IsNode(*[1], 'leaf') or $Impairment != 'Blindness'"
-      then: [pause: short]
-      else: [t: " root的末端", pause: short]      # phrase(start the fifth root of x 'end of root')
+      then: [T: "根", x: "*[1]"]
+  - pause: short
 
 # Fraction rules
 # Commented unnecessary expressions in Chinese.
