@@ -66,27 +66,28 @@
       else: [t: " root的末端", pause: short]      # phrase(start the fifth root of x 'end of root')
 
 # Fraction rules
+# Commented unnecessary expressions in Chinese.
 # Mixed numbers mostly "just work" because the invisible char reads as "and" and other parts read properly on their own
-- name: common-fraction
-  tag: fraction
-  match:
-  - "*[1][self::m:mn][not(contains(., '.')) and text()<20]   and"
-  - "*[2][self::m:mn][not(contains(., '.')) and 2<= text() and text()<=10]"
-  variables: [IsPlural: "*[1]!=1"]
-  replace:
-  - x: "*[1]"
-  - x: "ToOrdinal(*[2], true(), $IsPlural)"   # extra args specify fractional ordinal and whether it is plural
+# - name: common-fraction
+#   tag: fraction
+#   match:
+#   - "*[1][self::m:mn][not(contains(., '.')) and text()<20]   and"
+#   - "*[2][self::m:mn][not(contains(., '.')) and 2<= text() and text()<=10]"
+#   variables: [IsPlural: "*[1]!=1"]
+#   replace:
+#   - x: "*[1]"
+#   - x: "ToOrdinal(*[2], true(), $IsPlural)"   # extra args specify fractional ordinal and whether it is plural
 
-- name: common-fraction-mixed-number
-  tag: fraction
-  match:
-  - "preceding-sibling::*[1][self::m:mo][text()='⁤'] and" # preceding element is invisible plus
-  - "*[1][self::m:mn][not(contains(., '.'))]   and"
-  - "*[2][self::m:mn][not(contains(., '.'))]"
-  variables: [IsPlural: "*[1]!=1"]
-  replace:
-  - x: "*[1]"
-  - x: "ToOrdinal(*[2], true(), $IsPlural)"   # extra args specify fractional ordinal and whether it is plural
+# - name: common-fraction-mixed-number
+#   tag: fraction
+#   match:
+#   - "preceding-sibling::*[1][self::m:mo][text()='⁤'] and" # preceding element is invisible plus
+#   - "*[1][self::m:mn][not(contains(., '.'))]   and"
+#   - "*[2][self::m:mn][not(contains(., '.'))]"
+#   variables: [IsPlural: "*[1]!=1"]
+#   replace:
+#   - x: "*[1]"
+#   - x: "ToOrdinal(*[2], true(), $IsPlural)"   # extra args specify fractional ordinal and whether it is plural
 
 
 - name: simple
@@ -98,9 +99,9 @@
   - "(IsNode(*[1],'leaf') and IsNode(*[2],'leaf')) and"
   - "not(ancestor::*[name() != 'mrow'][1]/self::m:fraction)" # FIX: can't test for mrow -- what should be used???
   replace:
-  - x: "*[1]"
-  - t: "超过"      # phrase(the fraction 3 'over' 4)
   - x: "*[2]"
+  - T: "分之"      # phrase(分式 4 分之 3)
+  - x: "*[1]"
   - pause: short
 
 - name: default
@@ -109,13 +110,13 @@
   replace:
   - test:
       if: "$Impairment = 'Blindness'"
-      then: [t: "分数"]      # phrase(the 'fraction' 3 over 4)
+      then: [T: "分式"]      # phrase('分式' 3 比上 4)
   - pause: short
   - x: "*[1]"
   - test:
       if: "not(IsNode(*[1],'leaf'))"
       then: [pause: short]
-  - t: "超过"      # phrase(the fraction 3 'over' 4)
+  - T: "比上"      # phrase(分式 3 '比上' 4)
   - test:
       if: "not(IsNode(*[2],'leaf'))"
       then: [pause: short]
@@ -123,7 +124,7 @@
   - pause: short
   - test:
       if: "$Impairment = 'Blindness'"
-      then: [t: "结束分数"]      # phrase(start 7 over 8 'end of fraction')
+      then: [T: "结束分式"]      # phrase(分式 7 比上 8 '结束分式')
   - pause: medium
 
 # rules for functions raised to a power
