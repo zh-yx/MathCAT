@@ -109,16 +109,18 @@
   tag: binomial
   match: "count(*)=2 and not(@data-intent-property)"
   replace:
+  - T: "从"      # phrase('从' 5 选择 2 项)
   - x: "*[1]"
-  - t: "选择"      # phrase(you can 'choose' a number at random)
+  - T: "选择"      # phrase(从 5 '选择' 2 项)
   - x: "*[2]"
+  - T: "项"      # phrase(从 5 选择 2 '项')
 
 - name: permutation
   tag: permutation-symbol
   match: "count(*)=2 and not(@data-intent-property)"
   replace:
   - x: "*[2]"
-  - t: "排列"      # phrase(the solution  involves several 'permutations of' values)
+  - T: "排列"      # phrase(从n个不同元素中取出r个元素的'排列'数)
   - x: "*[1]"
 
 - name: intervals

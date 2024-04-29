@@ -293,7 +293,7 @@
   - "    IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|')]" # followed by parens
   - " )"
   replace:
-  - t: "时代"      # phrase(7 'times' 5 equals 35)
+  - T: "乘以"      # phrase(7 '乘以' 5 等于 35)
 
 - name: no-say-parens
   tag: mrow
