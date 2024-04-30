@@ -253,24 +253,15 @@
   - test:
     - if: "count(*)=0"
       then:
-      - test:
-          if: "$Verbosity!='Terse'"
-          then: [t: "这"]      # phrase('the' empty set)
-      - t: "空集"      # phrase(when a set contains no value it is called an 'empty set' and this is valid)
+      - T: "空集"      # phrase('空集'是指不含任何元素的集合。)
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][text()=':' or text()='|' or text()='∣']"
       then:
-      - test:
-          if: "$Verbosity!='Terse'"
-          then: [t: "这"]      # phrase('the' set of all integers)
-      - t: "集合"      # phrase(the 'set of all' positive integers less than 10)
+      - T: "集合所有"      # phrase('集合所有' x 属于 正整数 满足 x 小于 10)
       - x: "*[1]/*[1]"
-      - t: "这样"      # phrase(x 'such that' x is less than y)
+      - T: "满足"      # phrase(x '满足' x 小于 y)
       - x: "*[1]/*[3]"
       else:
-      - test:
-          if: "$Verbosity!='Terse'"
-          then: [t: "这"]      # phrase('the' set of integers)
-      - t: "放"      # phrase(here is a 'set' of numbers)
+      - T: "集合"      # phrase('集合'指若干不同元素形成的总体。)
       - x: "*[1]"
 
 - name: times

@@ -332,7 +332,7 @@
  - "∈":                                         	#  0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [t: "一个元素"]                       	# 	(en: 'an element of', google translation)
+        then: [T: "属于"]                       	# 	(en: 'an element of')
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
@@ -356,7 +356,7 @@
     # rule is identical to 0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [t: "不是一个元素"]                     	# 	(en: 'is not an element of', google translation)
+        then: [T: "不属于"]                     	# 	(en: 'is not an element of')
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set

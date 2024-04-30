@@ -5,27 +5,23 @@
   tag: number-sets
   match: "count(*)=2 and *[2][text()='+' or text()='-']"
   replace:
-  - test:
-      if: "$Verbosity!='Terse'"
-      then:
-      - t: "这"      # phrase('the' square root of 25 equals 5)
   - bookmark: "*[2]/@id"
   - test:
     - if: "*[2][text()='+']"
-      then: [t: "正"]      # phrase(set of all 'positive' integers less than 10)
-      else: [t: "负"]      # phrase(set of all 'negative' integers less than minus 10)
+      then: [T: "正"]      # phrase(小于 10 的所有'正'整数的集合)
+      else: [T: "负"]      # phrase(小于 -10 的所有'负'整数的集合)
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[1][text()='ℂ']"
-      then: [t: "复数数字"]      # phrase('complex numbers' consist of two parts)
+      then: [T: "复数"]      # phrase('复数'包括实部和虚部两部分)
     - else_if: "*[1][text()='ℕ']"
-      then: [t: "自然数"]      # phrase('natural numbers' are numbers from 1 to infinity)
+      then: [T: "自然数"]      # phrase('自然数'又叫做非负整数)
     - else_if: "*[1][text()='ℚ']"
-      then: [t: "理性数字"]      # phrase('rational numbers' are the fraction of 2 integers)
+      then: [T: "有理数"]      # phrase('有理数'是两个整数的分数)
     - else_if: "*[1][text()='ℝ']"
-      then: [t: "实数"]      # phrase('real numbers' can be both positive and negative)
+      then: [T: "实数"]      # phrase('实数'可以分为有理数和无理数两类)
     - else_if: "*[1][text()='ℤ']"
-      then: [t: "整数"]      # phrase(positive 'integers' are natural numbers above 0)
+      then: [T: "整数"]      # phrase('整数'由负整数、0 和正整数组成)
       else: [x: "*[1][text()]"] # shouldn't happen
 
 - name: dimension-number-sets
@@ -37,15 +33,15 @@
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[1][text()='ℂ']"
-      then: [t: " c"]      # phrase(the letter 'C' used to represent complex number)
+      then: [T: "C"]      # phrase(the letter 'C' used to represent complex number)
     - else_if: "*[1][text()='ℕ']"
-      then: [t: " n"]      # phrase(the letter 'N' may represent natural numbers)
+      then: [T: "N"]      # phrase(the letter 'N' may represent natural numbers)
     - else_if: "*[1][text()='ℚ']"
-      then: [t: " q"]      # phrase(the letter 'Q' may represent rational numbers)
+      then: [T: "Q"]      # phrase(the letter 'Q' may represent rational numbers)
     - else_if: "*[1][text()='ℝ']"
-      then: [t: " r"]      # phrase(the letter 'R' may represent real numbers)
+      then: [T: "R"]      # phrase(the letter 'R' may represent real numbers)
     - else_if: "*[1][text()='ℤ']"
-      then: [t: " z"]      # phrase(the letter 'Z' may represent integers)
+      then: [T: "Z"]      # phrase(the letter 'Z' may represent integers)
       else: [x: "*[1][text()]"] # shouldn't happen
   - bookmark: "*[2]/@id"
   - x: "*[2]"
@@ -57,15 +53,15 @@
   - bookmark: "@id"
   - test:
     - if: "text()='ℂ'"
-      then: [t: "复数"]      # phrase('the complex numbers' include 2 parts)
+      then: [T: "复数"]      # phrase('复数'包括实部和虚部两部分)
     - else_if: "text()='ℕ'"
-      then: [t: "自然数"]      # phrase('the natural numbers' begin at 1)
+      then: [T: "自然数"]      # phrase('自然数'又叫做非负整数)
     - else_if: "text()='ℚ'"
-      then: [t: "理性数字"]      # phrase('the rational numbers' are the fraction of 2 integers)
+      then: [T: "有理数"]      # phrase('有理数'是两个整数的分数)
     - else_if: "text()='ℝ'"
-      then: [t: "实数"]      # phrase('the real numbers' can be both positive and negative)
+      then: [T: "实数"]      # phrase('实数'可以分为有理数和无理数两类)
     - else_if: "text()='ℤ'"
-      then: [t: "整数"]      # phrase('the integers' are natural numbers above 0)
+      then: [T: "整数"]      # phrase('整数'由负整数、0 和正整数组成)
       else: [x: "text()"] # shouldn't happen
 
 - name: real-part
