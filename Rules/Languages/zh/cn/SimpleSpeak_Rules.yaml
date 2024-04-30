@@ -11,7 +11,7 @@
   tag: mn
   match: "starts-with(text(), '-')"
   replace:
-  - t: "减去"        # phrase(x 'minus' y)
+  - T: "减去"        # phrase(x '减去' y)
   - x: "translate(text(), '-_', '')"
 
 - name: default
@@ -52,13 +52,13 @@
       - else_if: "*[2][text()='3']"
         then: [T: "立方"]      # phrase(开 x + y 的 '立方')
       - else_if: "*[2][not(contains(., '.'))]"
-        then: [x: "*[2]", t: "次方"]      # phrase(开 x + y 的 '5' '次方')
+        then: [x: "*[2]", T: "次方"]      # phrase(开 x + y 的 '5' '次方')
       else:
       - x: "*[2]"
       - T: "次方"      # phrase(开 x + y 的 N '次方')
   - test:
       if: "IsNode(*[1], 'leaf') or $Impairment != 'Blindness'"
-      then: [T: "根", x: "*[1]"]
+      then: [T: "根", x: "*[1]"]   # phrase(4 次方 '根' x)
   - pause: short
 
 # Fraction rules
@@ -130,7 +130,7 @@
   tag: inverse-function
   match: "."
   replace:
-  - t: "反向"      # phrase(the 'inverse' of f)
+  - T: "反"      # phrase('反' f)
   - x: "*[1]"
 
 - name: function-squared-or-cubed
