@@ -3,5 +3,6 @@
 mod SimpleSpeak {
     mod mfrac;
     mod mroot;
+    mod msup;
     mod geometry;
 }
