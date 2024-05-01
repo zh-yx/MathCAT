@@ -332,52 +332,65 @@
   match: "text()='sin'"
   replace:
   - bookmark: "@id"
-  - t: "正弦"      # phrase(the 'sine' of the angle)
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [T: "正弦"]      # phrase('正弦' theta 是角 θ 的正弦值)
+      else: [T: "sine"]      # phrase('sine' theta 是角 θ 的正弦值)
 - name: cos
   tag: mi
   match: "text()='cos'"
   replace:
   - bookmark: "@id"
   - test:
-      if: "$Verbosity='Terse'"
-      then: [t: " cos"]      # phrase('cos' is the abbreviation for cosine)
-      else: [t: "余弦"]      # phrase(find the 'cosine' in a right-angle triangle)
+    - if: "$Verbosity='Terse'"
+      then: [T: "cos"]      # phrase('cos' theta 是角 θ 的余弦值)
+    - else_if: "$Verbosity='Verbose'"
+      then: [T: "余弦"]      # phrase('余弦' theta 是角 θ 的余弦值)
+    - else: [T: "cosine"]      # phrase('cosine' theta 是角 θ 的余弦值)
 - name: tan
   tag: mi
   match: "text()='tan' or text()='tg'"
   replace:
   - bookmark: "@id"
   - test:
-      if: "$Verbosity='Terse'"
-      then: [t: "棕褐色"]      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
-      else: [t: "切线"]      # phrase(a 'tangent' is a straight line that touches a curve)
+    - if: "$Verbosity='Terse'"
+      then: [T: "tan"]      # phrase('tan' theta 是角 θ 的正切值)
+    - else_if: "$Verbosity='Verbose'"
+      then: [T: "正切"]      # phrase('正切' theta 是角 θ 的正切值)
+    - else: [T: "tangent"]      # phrase('tangent' theta 是角 θ 的正切值)
 - name: sec
   tag: mi
   match: "text()='sec'"
   replace:
   - bookmark: "@id"
   - test:
-      if: "$Verbosity='Terse'"
-      then: [t: "寻求"]      # phrase(to 'seek' a solution)
-      else: [t: "割线"]      # phrase(a 'secant' intersects a curve at two or more points)
+    - if: "$Verbosity='Terse'"
+      then: [T: "sec"]      # phrase('sec' theta 是角 θ 的正割值)
+    - else_if: "$Verbosity='Verbose'"
+      then: [T: "正割"]      # phrase('正割' theta 是角 θ 的正割值)
+    - else: [T: "secant"]      # phrase('secant' theta 是角 θ 的正割值)
 - name: csc
   tag: mi
   match: "text()='csc'"
   replace:
   - bookmark: "@id"
   - test:
-      if: "$Verbosity='Terse'"
-      then: [t: "共同"]      # phrase(we will 'cosecant' a solution)
-      else: [t: " cosecant"]      # phrase(the 'cosecant' is the reciprocal of the secant)
+    - if: "$Verbosity='Terse'"
+      then: [T: "cosec"]      # phrase('cosec' theta 是角 θ 的余割值)
+    - else_if: "$Verbosity='Verbose'"
+      then: [T: "余割"]      # phrase('余割' theta 是角 θ 的余割值)
+    - else: [T: "cosecant"]      # phrase('cosecant' theta 是角 θ 的余割值)
 - name: cot
   tag: mi
   match: "text()='cot'"
   replace:
   - bookmark: "@id"
   - test:
-      if: "$Verbosity='Terse'"
-      then: [t: " cotangent"]      # phrase(find the 'cotangent' in a right-angle triangle)
-      else: [t: " cotangent"]      # phrase(the 'cotangent' is the reciprocal of the tangent)
+    - if: "$Verbosity='Terse'"
+      then: [T: "cotan"]      # phrase('cotan' theta 是角 θ 的余切值)
+    - else_if: "$Verbosity='Verbose'"
+      then: [T: "余切"]      # phrase('余切' theta 是角 θ 的余切值)
+    - else: [T: "cotangent"]      # phrase(co'tangent' theta 是角 θ 的余切值)
 
 - name: sinh
   tag: mi
@@ -386,8 +399,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: " sinch"]      # phrase(the word 'sinch' is an abbreviation for hyperbolic sine)
-      else: [t: "双曲线正弦"]      # phrase(the 'hyperbolic sine' is used in mathematics)
+      then: [T: "sinch"]      # phrase(单词 'sinch' 是 双曲正弦 hyperbolic sine 的缩写)
+      else: [T: "双曲正弦"]      # phrase('双曲正弦'函数)
 - name: cosh
   tag: mi
   match: "text()='cosh'"
@@ -395,8 +408,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: " cosh"]      # phrase('cosh' is an abbreviation of hyperbolic cosine)
-      else: [t: "双曲余弦"]      # phrase(the 'hyperbolic cosine' is a mathematical function)
+      then: [T: "cosh"]      # phrase('cosh' 是双曲余弦 hyperbolic cosine 的缩写)
+      else: [T: "双曲余弦"]      # phrase('双曲余弦'函数)
 - name: tanh
   tag: mi
   match: "text()='tanh'"
@@ -404,8 +417,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: " tanch"]      # phrase('tanch' is shorthand for hyperbolic tangent)
-      else: [t: "双曲线切线"]      # phrase('hyperbolic tangent' is a mathematical function)
+      then: [T: "tanch"]      # phrase('tanch' 是双曲正切 hyperbolic tangent 的缩写)
+      else: [T: "双曲正切"]      # phrase('双曲正切'是一个数学函数)
 - name: sech
   tag: mi
   match: "text()='sech'"
@@ -413,8 +426,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: " sheck"]      # phrase('sheck' is shorthand for hyperbolic secant)
-      else: [t: "双曲线割线"]      # phrase('hyperbolic secant' is a mathematical function)
+      then: [T: "sheck"]      # phrase('sheck' 是双曲正割 hyperbolic secant 的简略读法)
+      else: [T: "双曲正割"]      # phrase('双曲正割' 是一个数学函数)
 - name: csch
   tag: mi
   match: "text()='csch'"
@@ -422,8 +435,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: " cosheck"]      # phrase('cosheck' is shorthand for hyperbolic cosecant)
-      else: [t: "双曲线整合"]      # phrase('hyperbolic cosecant' is a mathematical function)
+      then: [T: "cosheck"]      # phrase('cosheck' 是双曲余割 hyperbolic cosecant 的简略读法)
+      else: [T: "双曲余割"]      # phrase('双曲余割' 是一个数学函数)
 - name: coth
   tag: mi
   match: "text()='coth'"
@@ -431,8 +444,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: " cotanch"]      # phrase('cotanch' is shorthand for hyperbolic cotangent)
-      else: [t: "双曲线cotangent"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
+      then: [T: "cotanch"]      # phrase('cotanch' 是双曲余切 hyperbolic cotangent 的简略读法)
+      else: [T: "双曲余切"]      # phrase('双曲余切'是一个数学函数)
 - name: exponential
   tag: mi
   match: "text()='exp'"
