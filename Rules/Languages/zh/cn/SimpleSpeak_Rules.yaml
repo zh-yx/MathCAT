@@ -143,24 +143,21 @@
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][text()=2]"
-      then: [t: "平方"]      # phrase(5 'squared' equals 25)
-      else: [t: "立方体"]      # phrase(5 'cubed' equals 125)
+      then: [T: "平方"]      # phrase(5 '平方' 等于 25)
+      else: [T: "立方"]      # phrase(5 '立方' 等于 125)
 - name: function-power
   tag: power
   match:
   - "following-sibling::*[1][self::m:mo][text()='⁡']" #invisible function apply
   replace:
+  - x: "*[1]"
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "这"]      # # phrase('the' fourth power of 10)
+      then: [T: "的"]      # phrase(f '的' 4 次方)
   - bookmark: "*[2]/@id"
-  - test:
-      if: "*[2][self::m:mn][not(contains(., '.'))]"
-      then: [x: "ToOrdinal(*[2])"]
-      else: [x: "*[2]"]
-  - t: "力量"      # phrase(the fourth 'power of' 2)
+  - x: "*[2]"
+  - T: "次方"      # phrase(f 的 4 '次方')
   - pause: short
-  - x: "*[1]"
 
 # non-function rules for power
 - name: squared-or-cubed
@@ -171,19 +168,19 @@
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][text()=2]"
-      then: [t: "平方"]      # phrase(5 'squared' equals 25)
-      else: [t: "立方体"]      # phrase(5 'cubed' equals 125)
+      then: [T: "的平方"]      # phrase(5 '的平方' 等于 25)
+      else: [T: "的立方"]      # phrase(5 '的立方' 等于 125)
 
 - name: simple-integer
   tag: power
   match: "*[2][self::m:mn][not(contains(., '.'))]"
   replace:
   - x: "*[1]"
-  - t: "到"      # phrase(15 raised 'to the' second power equals 225)
   - test:
-      if: "*[2][.>0]"
-      then: {x: "ToOrdinal(*[2])"}
-      else: {x: "*[2]"}
+      if: "$Verbosity!='Terse'"
+      then: [T: "的"]   # phrase(x '的' 4 次方)
+  - x: "*[2]"
+  - T: "次方"   # phrase(x 的 4 '次方')
 - name: simple-negative-integer
   tag: power
   match:
@@ -191,24 +188,33 @@
   - "     *[1][self::m:mn][not(contains(., '.'))]]"
   replace:
   - x: "*[1]"
-  - t: "到"      # phrase(15 raised 'to the' second power equals 225)
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "的"]   # phrase(x '的' 负 2 次方)
   - x: "*[2]"
+  - T: "次方"   # phrase(x 的 负 2 '次方')
+
 - name: simple-var
   tag: power
   match: "*[2][self::m:mi][string-length(.)=1]"
   replace:
   - x: "*[1]"
-  - t: "到"      # phrase(15 raised 'to the' second power equals 225)
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "的"]   # phrase(x '的' n 次方)
   - x: "*[2]"
-  - pronounce: [{text: "-th"}, {ipa: "θ"}, {sapi5: "th"}, {eloquence: "T"}]
+  - T: "次方"   # phrase(x 的 4 '次方')
 
 - name: simple
   tag: power
   match: "IsNode(*[2], 'leaf')"
   replace:
   - x: "*[1]"
-  - t: "到"      # phrase(15 raised 'to the' second power equals 225)
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "的"]   # phrase(x '的' 2.0 次方)
   - x: "*[2]"
+  - T: "次方"   # phrase(x 的 2.0 '次方')
 
 - name: nested
   # it won't end in "power" if the exponent is simple enough
@@ -222,25 +228,22 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - t: "提高到"      # phrase(15 'raised to the' second power equals 225)
+  - T: "的"      # phrase(t '的' 2 的 x +1 次方, 次方;)
   - x: "*[2]"
   - pause: short
-  - test:
-      if: "$Impairment = 'Blindness'"
-      then:
-      - t: "指数末端"      # phrase(start 2 raised to the exponent 4 'end of exponent')
-      - pause: short
-      else:
-      - pause: medium
+  - T: "次方"      # phrase(t 的 2 的 x +1 次方, '次方';)
+  - pause: medium
 
 - name: default
   tag: power
   match: "."
   replace:
   - x: "*[1]"
-  - t: "提高到"      # phrase(15 'raised to the' second power equals 225)
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "的"]   # phrase(x '的' x 加 y 次方)
   - x: "*[2]"
-  - t: "力量"      # phrase(15 raised to the second 'power' equals 225)
+  - T: "次方"   # phrase(x 的 x  加 y '次方')
   - pause: short
 
 #
