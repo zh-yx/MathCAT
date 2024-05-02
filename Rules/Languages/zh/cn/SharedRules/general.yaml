@@ -124,21 +124,20 @@
   match: "count(*)=2 and not(@data-intent-property)"
   replace:
   - test:
-      if: "$Verbosity!='Terse'"
-      then:
-      - t: "这"      # phrase('the' square root of 25 equals 5)
-  - x: "translate(name(.),'-', ' ')"
+    - if: "name(.) = 'open-interval'"
+      then: [T: "开区间"]
+    - else_if: "name(.) = 'closed-interval'"
+      then: [T: "闭区间"]
+    - else_if: "name(.) = 'open-closed-interval'"
+      then: [T: "开闭区间"]
+    - else_if: "name(.) = 'closed-open-interval'"
+      then: [T: "閉開區間"]
   - test:
       if: "$Verbosity!='Terse'"
-      then:
-      - t: "从"      # phrase(subtracting 5 'from' 10 gives 5)
-      - x: "*[1]"
-      - t: "添加到"      # phrase(adding 6 'to' 6 equals  12)
-      - x: "*[2]"
-      else:
-      - x: "*[1]"
-      - t: "逗号"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
-      - x: "*[2]"
+      then: [T: "从"]      # phrase(区间 '从' 0 到 1)
+  - x: "*[1]"
+  - T: "到"      # phrase(区间 从 0 '到' 1)
+  - x: "*[2]"
 
 - name: default-point
   tag: point
