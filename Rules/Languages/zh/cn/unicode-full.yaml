@@ -2,20 +2,20 @@
 
 
  - "¢": [t: "美分符号"]                             	#  0xa2	(en: 'cents', google: '美分')
- - "£": [t: "英镑符号"]                             	#  0xa3	(en: 'pounds', google: '磅')
+ - "£": [T: "英镑"]                             	#  0xa3	(en: 'pounds')
  - "¤": [t: "货币符号"]                             	#  0xa4	(en: 'currency sign', google: '货币标志')
- - "¥": [t: "元符号"]                              	#  0xa5	(en: 'yen', google: '日元')
+ - "¥": [T: "元"]                              	#  0xa5	(en: 'yen')
  - "¦": [t: "破折号"]                              	#  0xa6	(en: 'broken bar', google: '破碎的酒吧')
  - "§": [t: "节号"]                               	#  0xa7	(en: 'section', google: '部分')
  - "¨": [t: "区分音符"]                             	#  0xa8	(en: 'double dot', google: '双点')
- - "©": [t: "版权"]                               	#  0xa9	(en: 'copyright')
+ - "©": [T: "版权"]                               	#  0xa9	(en: 'copyright')
  - "ª": [t: "女性序指标"]                            	#  0xaa	(en: 'feminine ordinal indicator', google: '女性序数指标')
  - "¬": [t: "非"]                                	#  0xac	(en: 'not', google: '不是')
  - "«": [t: "双左指着角度引述"]                         	#  0xab	(en: 'left-pointing double angle quote mark', google: '左点双角引用标记')
  - "¯":                                         	#  0xaf
      - test:
         if: "ancestor::m:modified-variable and preceding-sibling::*[1][self::m:mi]"
-        then: [t: "酒吧"]                         	# 	(en: 'bar', google translation)
+        then: [T: "横杠"]                         	# 	(en: 'bar')
         else: [t: "长音符号"]                       	# 	(en: 'line', google: '线')
  - "²": [t: "上标二"]                              	#  0xb2	(en: 'two', google: '二')
  - "³": [t: "上标三"]                              	#  0xb3	(en: 'three', google: '三')
@@ -745,8 +745,8 @@
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [t: "在"]                  	# 	(en: 'is in', google translation)
               - else: [t: "的元素"]                	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to', google: '属于')
- - "∋": [t: "包含成员"]                             	#  0x220b	(en: 'contains the member')
- - "∌": [t: "不包含成员"]                            	#  0x220c	(en: 'does not contain the member')
+ - "∋": [T: "含有"]                             	#  0x220b	(en: 'contains the member')
+ - "∌": [T: "不含有"]                            	#  0x220c	(en: 'does not contain the member')
  - "∍": [t: "包含成员"]                             	#  0x220d	(en: 'contains the member')
  - "∎": [t: "结束证明"]                             	#  0x220e	(en: 'end of proof', google: '终点')
  - "∏": [t: "积"]                                	#  0x220f	(en: 'product', google: '产品')
@@ -805,8 +805,8 @@
  - "∱": [t: "顺时针积分"]                            	#  0x2231	(en: 'clockwise integral')
  - "∲": [t: "顺时针围道积分 (右箭号)"]                    	#  0x2232	(en: 'clockwise contour integral', google: '顺时针轮廓积分')
  - "∳": [t: "反时针围道积分"]                          	#  0x2233	(en: 'anticlockwise contour integral', google: '逆时针轮廓积分')
- - "∴": [t: "因此"]                               	#  0x2234	(en: 'therefore', google: '所以')
- - "∵": [t: "因为"]                               	#  0x2235	(en: 'because')
+ - "∴": [T: "所以"]                               	#  0x2234	(en: 'therefore')
+ - "∵": [T: "因为"]                               	#  0x2235	(en: 'because')
  - "∶":                                         	#  0x2236
      - test: 
          if: "$Verbosity!='Terse'"
@@ -826,7 +826,7 @@
          then: [t: "是"]                         	# 	(en: 'is', google translation)
      - t: "同位的"                                 	# 	(en: 'homothetic to', google: '同性恋')
  - "∼": [t: "颚化符运算"]                            	#  0x223c	(en: 'varies with', google: '随之而来')
- - "∽": [t: "倒置的颚化符"]                           	#  0x223d	(en: 'reversed tilde', google: '扭转了蒂尔德')
+ - "∽": [T: "相似于"]                           	#  0x223d	(en: 'reversed tilde')
  - "∾":                                         	#  0x223e
      - test: 
          if: "$Verbosity!='Terse'"
@@ -862,22 +862,13 @@
          then: [t: "是"]                         	# 	(en: 'is', google translation)
      - t: "不大约也不等于"                             	# 	(en: 'neither approximately nor actually equal to', google: '大约也不等于')
  - "≈":                                         	#  0x2248
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "是"]                         	# 	(en: 'is', google translation)
-     - t: "几乎等于"                                	# 	(en: 'almost equal to')
+     - T: "约等于"                                	# 	(en: 'is almost equal to')
  - "≉":                                         	#  0x2249
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "是"]                         	# 	(en: 'is', google translation)
-     - t: "不几乎等于"                               	# 	(en: 'not almost equal to', google: '几乎不等于')
+     - T: "不约等于"                               	# 	(en: 'is not almost equal to', google: '几乎不等于')
  - "≊":                                         	#  0x224a
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "是"]                         	# 	(en: 'is', google translation)
-     - t: "几乎等于或等于"                             	# 	(en: 'almost equal or equal to')
+     - T: "约等于或等于"                             	# 	(en: 'is almost equal or equal to')
  - "≋": [t: "三重颚化符"]                            	#  0x224b	(en: 'triple tilde', google: '三重tilde')
- - "≌": [t: "都等于"]                              	#  0x224c	(en: 'are all equal to')
+ - "≌": [T: "全等于"]                              	#  0x224c	(en: 'are all equal to')
  - "≍":                                         	#  0x224d
      - test: 
          if: "$Verbosity!='Terse'"
@@ -1121,10 +1112,7 @@
  - "⊣": [t: "左平头钉"]                             	#  0x22a3	(en: 'does not yield', google: '不屈服')
  - "⊤": [t: "朝下平头钉"]                            	#  0x22a4	(en: 'top', google: '顶部')
  - "⊥":                                         	#  0x22a5
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "是"]                         	# 	(en: 'is', google translation)
-     - t: "垂直的"                                 	# 	(en: 'bottom', google: '底部')
+     - T: "垂直于"                                 	# 	(en: 'is bottom')
  - "⊦": [t: "断言"]                               	#  0x22a6	(en: 'reduces to', google: '还原为')
  - "⊧": [t: "模型"]                               	#  0x22a7	(en: 'models', google: '楷模')
  - "⊨":                                         	#  0x22a8
@@ -1315,7 +1303,7 @@
      - t: "非正态字群或等于"                            	# 	(en: 'not a normal subgroup of nor is equal to', google: '不是正常的亚组，也不等于')
  - "⋭": [t: "不包含正态字群或等于"]                       	#  0x22ed	(en: 'does not contain as a normal subgroup nor is equal to', google: '不包含正常子组，也不等于')
  - "⋮": [t: "垂直省略"]                             	#  0x22ee	(en: 'vertical ellipsis', google: '垂直省略号')
- - "⋯": [t: "数学轴省略"]                            	#  0x22ef	(en: 'dot dot dot', google: '点点点')
+ - "⋯": [T: "点点点"]                            	#  0x22ef	(en: 'dot dot dot')
  - "⋰": [t: "上右对角省略"]                           	#  0x22f0	(en: 'upwards diagonal ellipsis', google: '向上对角线')
  - "⋱": [t: "下右对角省略"]                           	#  0x22f1	(en: 'diagonal ellipsis', google: '对角线省略号')
  - "⋲": [t: "有长划水平划的元素"]                        	#  0x22f2	(en: 'element of with long horizontal stroke')
@@ -1458,8 +1446,8 @@
     - spell: "translate('.', '⓵⓶⓷⓸⓹⓺⓻⓼⓽', '123456789')"
  - "⓾": [t: "双圈十"]                              	#  0x24fe	(en: 'double circled ten', google translation)
  - "⓿": [t: "黑色圆圈零"]                            	#  0x24ff	(en: 'black circled zero', google translation)
- - "■": [t: "黑色广场"]                             	#  0x25a0	(en: 'black square', google translation)
- - "□": [t: "白色广场"]                             	#  0x25a1	(en: 'white square', google translation)
+ - "■": [T: "实心方形"]                             	#  0x25a0	(en: 'black square')
+ - "□": [T: "空心方形"]                             	#  0x25a1	(en: 'white square')
  - "▢": [t: "白色广场有圆角"]                          	#  0x25a2	(en: 'white square with rounded corners', google translation)
  - "▣": [t: "白色正方形，包含黑色小正方形"]                   	#  0x25a3	(en: 'white square containing small black square', google translation)
  - "▤": [t: "与水平填充的正方形"]                        	#  0x25a4	(en: 'square with horizontal fill', google translation)
@@ -1470,14 +1458,14 @@
  - "▩": [t: "正方形，对角线交叉染色填充"]                    	#  0x25a9	(en: 'square with diagonal crosshatch fill', google translation)
  - "▪": [t: "黑色小广场"]                            	#  0x25aa	(en: 'black small square', google translation)
  - "▫": [t: "白色小广场"]                            	#  0x25ab	(en: 'white small square', google translation)
- - "▬": [t: "黑色矩形"]                             	#  0x25ac	(en: 'black rectangle', google translation)
- - "▭": [t: "白色矩形"]                             	#  0x25ad	(en: 'white rectangle', google translation)
+ - "▬": [T: "实心矩形"]                             	#  0x25ac	(en: 'black rectangle')
+ - "▭": [T: "空心矩形"]                             	#  0x25ad	(en: 'white rectangle', google translation)
  - "▮": [t: "黑色垂直矩形"]                           	#  0x25ae	(en: 'black vertical rectangle', google translation)
  - "▯": [t: "白色垂直矩形"]                           	#  0x25af	(en: 'white vertical rectangle', google translation)
- - "▰": [t: "黑色平行四边形"]                          	#  0x25b0	(en: 'black parallelogram', google translation)
- - "▱": [t: "白色平行四边形"]                          	#  0x25b1	(en: 'white parallelogram', google translation)
- - "▲": [t: "黑色指向三角形"]                          	#  0x25b2	(en: 'black up pointing triangle', google translation)
- - "△": [t: "白色指向三角形"]                          	#  0x25b3	(en: 'white up pointing triangle', google translation)
+ - "▰": [T: "实心平行四边形"]                          	#  0x25b0	(en: 'black parallelogram')
+ - "▱": [T: "空心平行四边形"]                          	#  0x25b1	(en: 'white parallelogram')
+ - "▲": [T: "实心三角形"]                          	#  0x25b2	(en: 'black up pointing triangle')
+ - "△": [T: "空心三角形"]                          	#  0x25b3	(en: 'white up pointing triangle')
  - "▴": [t: "黑色指向小三角形"]                         	#  0x25b4	(en: 'black up pointing small triangle', google translation)
  - "▵": [t: "白色指向小三角形"]                         	#  0x25b5	(en: 'white up pointing small triangle', google translation)
  - "▶": [t: "黑色右指向三角形"]                         	#  0x25b6	(en: 'black right pointing triangle', google translation)
@@ -1496,8 +1484,8 @@
  - "◃": [t: "白色左指向小三角形"]                        	#  0x25c3	(en: 'white left pointing small triangle', google translation)
  - "◄": [t: "黑色左指向指针"]                          	#  0x25c4	(en: 'black left pointing pointer', google translation)
  - "◅": [t: "白色左指向指针"]                          	#  0x25c5	(en: 'white left pointing pointer', google translation)
- - "◆": [t: "黑色钻石"]                             	#  0x25c6	(en: 'black diamond', google translation)
- - "◇": [t: "白钻石"]                              	#  0x25c7	(en: 'white diamond', google translation)
+ - "◆": [T: "实心菱形"]                             	#  0x25c6	(en: 'black diamond')
+ - "◇": [T: "空心菱形"]                              	#  0x25c7	(en: 'white diamond')
  - "◈": [t: "白色钻石含有黑色小钻石"]                      	#  0x25c8	(en: 'white diamond containing black small diamond', google translation)
  - "◉": [t: "鱼眼"]                               	#  0x25c9	(en: 'fisheye', google translation)
  - "◊": [t: "菱形"]                               	#  0x25ca	(en: 'lozenge', google translation)
@@ -1716,9 +1704,9 @@
  - "⟵": [t: "长的左箭号"]                            	#  0x27f5	(en: 'long leftwards arrow', google: '长左箭头')
  - "⟶": [t: "长的右箭号"]                            	#  0x27f6	(en: 'long rightwards arrow', google: '长向右箭头')
  - "⟷": [t: "长的左右箭号"]                           	#  0x27f7	(en: 'long left right arrow', google: '左右箭头')
- - "⟸": [t: "长的左双箭号"]                           	#  0x27f8	(en: 'long leftwards double arrow', google: '长左箭头')
- - "⟹": [t: "长的右双箭号"]                           	#  0x27f9	(en: 'long rightwards double arrow', google: '长向右双箭头')
- - "⟺": [t: "长的左右双箭号"]                          	#  0x27fa	(en: 'long left right double arrow', google: '左右右双箭头')
+ - "⟸": [T: "长左双箭头"]                           	#  0x27f8	(en: 'long leftwards double arrow')
+ - "⟹": [T: "长右双箭头"]                           	#  0x27f9	(en: 'long rightwards double arrow')
+ - "⟺": [T: "长左右双箭头"]                          	#  0x27fa	(en: 'long left right double arrow')
  - "⟻": [t: "长的出自杆的左箭号"]                        	#  0x27fb	(en: 'long leftwards arrow from bar', google: '从吧台上远的箭头')
  - "⟼": [t: "长的出自杆的右箭号"]                        	#  0x27fc	(en: 'long rightwards arrow from bar', google: '从吧台到右箭头')
  - "⟽": [t: "长的出自杆的左双箭号"]                       	#  0x27fd	(en: 'long leftwards double arrow from bar', google: '从吧台长的左右双箭头')
