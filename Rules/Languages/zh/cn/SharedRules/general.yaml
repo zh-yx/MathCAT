@@ -466,36 +466,44 @@
       else: [t: "协方差"]      # phrase('covariance' function)
 
 - # handle both log and ln
+# and lg
   name: log
   tag: mrow
   variables: [log_is_simple: "IsNode(*[3],'simple')"]
   match:
   - "count(*)=3 and"
-  - "*[1][self::m:mi][text()='log' or text()='ln'] and"
+  - "*[1][self::m:mi][text()='log' or text()='ln' or text()='lg'] and"
   - "*[2][self::m:mo][text()='⁡']"
   replace:
   - bookmark: "*[1]/@id"
   - test:
-      if: "$log_is_simple"
+      if: "$log_is_simple and $Verbosity !='Terse'"
+      then:
+      - x: "*[3]"
+      - T: "的"
+  - test:
+    - if: "*[1][text()='log']"
       then_test:
-      - if: "*[1][text()='log']"
-        then: [t: "日志"]      # phrase(the 'log' function is used in mathematics)
-      - else_if: "$Verbosity='Terse'"
+        if: "$Verbosity='Terse'"
+        then: [T: "log"]
+        else: [T: "对数"]      # phrase(x 的'对数')
+    - else_if: "*[1][text()='lg']"
+      then_test:
+        if: "$Verbosity='Terse'"
+        then: [spell: "'lg'"]
+        else: [T: "常用对数"]      # phrase(x 的'常用对数')
+    - else_if: "*[1][text()='ln']"
+      then_test:
+        if: "$Verbosity='Terse'"
         then: [spell: "'ln'"]
-        else: [t: "自然日志"]      # phrase(the 'natural log' function is used in mathematics)
-      else:
-      - test:
-          if: "$Verbosity!='Terse' and not(log_is_simple)"
-          then: [t: "这"]      # phrase('the' square root of 25 equals 5)
-      - test:
-        - if: "*[1][text()='log']"
-          then: [t: "日志"]      # phrase(the 'log' function is used in mathematics)
-        - else_if: "$Verbosity='Terse'"
-          then: [spell: "'ln'"]
-          else: [t: "自然日志"]      # phrase(the 'natural log' function is used in mathematics)
-      - t: "的"      # phrase(5 is the square root 'of' 25)
-      - pause: short
-  - x: "*[3]"
+        else: [T: "自然对数"]      # phrase(x 的'自然对数')
+    - else:
+      - x: "*[1]"
+  - test:
+      if: "not($log_is_simple) or $Verbosity = 'Terse'"
+      then:
+      - x: "*[3]"
+      - pause: medium
 
 - name: log-base
   tag: log-base
@@ -503,10 +511,14 @@
   replace:
   - bookmark: "@id"
   - test:
-      if: "$Verbosity!='Terse'"
-      then: [t: "这"]      # phrase('the' square root of 25 equals 5)
-  - t: "日志基础"      # phrase(the 'log base' is often base 10)
+      if: "$Verbosity!='Verbose'"
+      then: [T: "对数"]      # phrase('对数' 3 为底 x)
+      else: [T: "以"]      # phrase('以' 3 为底的对数 x)
   - x: "*[1]"
+  - test:
+      if: "$Verbosity!='Verbose'"
+      then: [T: "为底"]      # phrase(对数 3 '为底' x)
+      else: [T: "为底的对数"]      # phrase(以 3 '为底的对数' x)
 
 - name: log-base-power
   tag: log-base-power
@@ -514,20 +526,23 @@
   replace:
   - bookmark: "@id"
   - test:
-      if: "$Verbosity!='Terse'"
-      then: [t: "这"]      # phrase('the' square root of 25 equals 5)
-  - t: "日志基础"      # phrase(the 'log base' is often base 10)
+      if: "$Verbosity!='Verbose'"
+      then: [T: "对数"]      # phrase('对数' 3 为底 平方)
+      else: [T: "以"]      # phrase('以' 3 为底的对数 平方)
   - x: "*[1]"
-  - pause: medium
+  - test:
+      if: "$Verbosity!='Verbose'"
+      then: [T: "为底"]      # phrase(对数 3 '为底' 平方)
+      else: [T: "为底的对数"]      # phrase(以 3 '为底的对数' 平方)
   - test:
       - if: "*[2][text()=2]"
-        then: [t: "平方"]     
+        then: [T: "平方"]     
       - else_if: "*[2][text()=3]"
-        then: [t: "立方体"]
+        then: [T: "立方"]
         else:  # don't bother with special cases as this isn't likely to happen
-        - t: "提高到"      # phrase(x 'raised to the' second power)
+        - T: "的"      # phrase(对数 b 为底 '的' n 次方)
         - x: "*[2]"
-        - t: "力量"      # phrase(x raised to the second 'power')
+        - T: "次方"      # phrase(对数 b 为底 的 n '次方')
   - pause: short
 
 - name: multi-line
