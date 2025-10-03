@@ -1,0 +1,410 @@
+---
+ # Note to translators:
+ #   most languages don't have two ways to pronounce 'a' -- if not need, remove the rules and change "B-Z" to "A-Z"
+ #   some languages say the word for "uppercase" after the letter. Make sure to change that where appropriate by moving some code around
+ - "a": 
+    - test: 
+        if: "$TTS='none'"
+        then: [t: "eigh"]                         # long "a" sound in all speech engines I tested (espeak, MS SAPI, eloquence,
+        else: [spell: "'a'"]                         #    AWS Polly, ReadSpeaker, NaturalReader, google cloud, nuance, ibm watson)
+ - "b-z": 
+    - test: 
+        if: "$TTS='none'"
+        then: [t: "."]
+        else: [spell: "'.'"]
+
+ # Capital letters are a little tricky: users can pick their favorite word (something that was requested) and 
+ # screen readers have options to use pitch changes or beeps instead of or in addition to say "cap"
+ # Also, if a user can see the screen, they probably don't need to hear "cap", but if they specified an override, they must want to hear the override.
+
+ - "A":
+    - test: 
+        if: "$CapitalLetters_Beep"
+        then:
+        - audio:
+            value: "beep.mp4"
+            replace: []
+    - test: 
+        if: "$CapitalLetters_UseWord"
+        then_test:
+          if: "$SpeechOverrides_CapitalLetters = ''"
+          then_test:
+            if: "$Impairment = 'Blindness'"
+            then: [T: "大写"]    # (en: 'cap')
+          else: [x: "$SpeechOverrides_CapitalLetters"]
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        replace:
+        - test:
+            if: "$TTS='none'"
+            then: [t: "eigh"]
+            else: [spell: "'a'"]
+
+ - "B-Z":
+    - test: 
+        if: "$CapitalLetters_Beep"
+        then:
+        - audio:
+            value: "beep.mp4"
+            replace: []
+    - test: 
+        if: "$CapitalLetters_UseWord"
+        then_test:
+          if: "$SpeechOverrides_CapitalLetters = ''"
+          then_test:
+            if: "$Impairment = 'Blindness'"
+            then: [T: "大写"]    # (en: 'cap')
+          else: [x: "$SpeechOverrides_CapitalLetters"] 
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
+        replace: [spell: "translate('.', 'BCDEFGHIJKLMNOPQRSTUVWXYZ', 'bcdefghijklmnopqrstuvwxyz')"]
+
+ - "0-9": [t: "."]
+
+ - " ": [t: " "]                     # 0x20
+
+ - "!":                                            # 0x21
+    - test:
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':structure:')]"
+        then: [T: "叹号"]    # 0x21 (en: 'exclamation point')
+        else: [T: "阶乘"]    # 0x21 (en: 'factorial')
+
+ - "\"": [T: "引号"]    # 0x22 (en: 'quotation mark')
+ - "#": [T: "井号"]    # 0x23 (en: 'number')
+ - "$": [T: "美元"]    # 0x24 (en: 'dollars')
+ - "%": [T: "百分号"]    # 0x25 (en: 'percent')
+ - "&": [T: "和号"]    # 0x26 (en: 'ampersand')
+ - "'": [T: "丿号"]    # 0x27 (en: 'apostrophe')
+ - "(":                                            # 0x28
+     - T: "左括号"    # 0x28 (en: 'left paren')
+ - ")":                                          # 0x29
+    - T: "右括号"    # 0x29 (en: 'right paren')
+
+ - "*":                                          # 0x2a
+    test:
+        if: "parent::*[name(.)='msup' or name(.)='msubsup' or name(.)='skip-super']"
+        then: [T: "星号"]    # 0x2a (en: 'star')
+        else: [T: "乘"]    # 0x2a (en: 'times')
+ - "+": [T: "加"]    # 0x2b (en: 'plus')
+ - ",":                                          # 0x2c
+    # the following deals with the interaction of "," with "…" which sometimes wants the ',' to be silent
+    # that this test is here and not with "…" is not ideal, but seems simplest
+     test:
+        if:
+            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or "
+               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
+               # speak "comma" when not adjacent to '…'
+            - "( following-sibling::*[1][text()!= '…'] and preceding-sibling::*[1][text()!='…']  ) or "
+               # except if expression starts with '…'
+            - "../*[1][.='…'] "
+        then:
+        - T: "逗号"    # (en: 'comma')
+        - test:
+            if: "$Verbosity != Terse"
+            then: [pause: short]
+        # else silent
+
+ - "-": [T: "减"]    # 0x2d (en: 'minus')
+ - ".":                                          # 0x2e
+    - test:
+        if: "parent::*[1][self::m:mn]"
+        then: [T: "点"]    # (en: 'point')
+        else: [T: "据点"]    # (en: 'dot')
+ - "/": [T: "除以"]    # 0x2f (en: 'divided by')
+ - ":": [T: "冒号"]    # 0x3a (en: 'colon')
+ - ";": [T: "分号"]    # 0x3b (en: 'semicolon')
+
+ - "<":                                          # 0x3c
+     - T: "小于"    # (en: 'less than')
+ - "=":                                           # 0x3d
+     - T: "等于"    # (en: 'equals')
+ - ">":                                          # 0x3e
+     - T: "大于"    # (en: 'greater than')
+
+ - "?": [T: "问号"]    # 0x3f (en: 'question mark')
+ - "@": [T: "at"]    # 0x40 (en: 'at sign')
+ - "[":                                          # 0x5b
+     - T: "左方括号"    # (en: 'left bracket')
+ - "\\": [T: "反斜杠"]    # 0x5c (en: 'back slash')
+ - "]":                                          # 0x5d
+     - T: "右方括号"    # (en: 'right bracket')
+ - "^":                                           # 0x5e
+    - test:
+        if: "parent::m:modified-variable or parent::m:mover"
+        then: [T: "帽"]    # (en: 'hat')
+        else: [T: "拖字符"]    # (en: 'caret')
+ - "_": [T: "下划线"]    # 0x5f (en: 'under bar')
+ - "`": [T: "反丿号"]    # 0x60 (en: 'grave')
+ - "{":                                         # 0x7b
+    - T: "左花括号"    # (en: 'left brace')
+
+ - "|":                                          # 0x7c
+    # note: for ClearSpeak and SimpleSpeak, "|" inside of sets is handled at the mrow level, same for 'sets'
+     - with:
+        variables: [DefaultToGiven: "count(preceding-sibling::*)=1 and count(following-sibling::*)=1 and ../../../*[1][.='P']"] # P(A|B)
+        replace:
+        - test:
+            - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+              then: [T: "竖线"]    # (en: 'vertical line')
+            - else_if: "$SpeechStyle != 'ClearSpeak'"
+              then_test:
+                - if: "$DefaultToGiven"
+                  then: [T: "给定"]    # (en: 'given')
+                - else_if: "preceding-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))] and 
+                            following-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))]"
+                  then: [T: "整除"]    # (en: 'divides')
+                  else: [T: "竖线"]    # (en: 'vertical line')
+            - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
+              then: [T: "竖线"]    # (en: 'vertical line')
+            - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
+              then: [T: "满足"]    # (en: 'such that')
+            - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
+              then: [T: "给定"]    # (en: 'given')
+            - else: [T: "整除"]    # (en: 'divides')
+
+ - "}":                                          # 0x7d
+    - T: "右花括号"    # (en: 'right brace')
+
+ - "~": [T: "波浪号"]    # 0x7e (en: 'tilde')
+ - " ":                                            # 0xa0
+    - test:
+        # could be mtext in mtd or mtext in an mrow that is a concatenation of mtd's. Is there a better solution?
+        if: "@data-empty-in-2D and not(ancestor::*[self::m:piecewise or self::m:system-of-equations or self::m:lines])"
+        then: [T: "空白"]                         # want to say something for fraction (etc) with empty child
+        else: [T: ""]
+
+ - "¬": [T: "非"]    # 0xac (en: 'not')
+ - "°": [T: "度"]    # 0xb0 (en: 'degrees')
+ - "±": [T: "加减"]    # 0xb1 (en: 'plus or minus')
+ - "´": [t: "尖音"]    # 0xb4 (en: 'acute')
+ - "·":                                            # 0xB7
+    - test:
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
+        then: [T: "圆点"]    # (en: 'dot')
+        else: [t: "点乘"]    # (en: 'times')
+ - "×":                                          # 0xd7
+    - test:
+        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
+        then: [T: "乘以"]    # (en: 'times')
+        else_test:
+            if: $ClearSpeak_MultSymbolX = 'By'
+            then: [T: "乘"]    # (en: 'by')
+            else: [T: "叉乘"]    # (en: 'cross')
+ - "÷": [T: "除以"]    # 0xf7 (en: 'divided by')
+ - "̀": [T: "抑音修饰"]    # 0x300 (en: 'grave accent embellishment')
+ - "́": [T: "扬音修饰"]    # 0x301 (en: 'acute accent embellishment')
+ - “̂”: [T: "抑扬音修饰"]    # 0x302 (en: 'circumflex accent embellishment'')
+ - "̃": [T: "波浪修饰"]     # 0x303 (en: 'tilde embellishment')
+ - "̄": [T: "长音修饰"]    # 0x304 (en: 'macron embellishment')
+ - "̅": [T: "上划线修饰"]    # 0x305 (en: 'overbar embellishment')
+ - "̆": [T: "短音符"]    # 0x306 (en: 'breve')
+ - "̇": [T: "上点修饰"]    # 0x307 (en: 'dot above embellishment')
+
+   # Note: ClearSpeak has pref TriangleSymbol for "Δ", but that is wrong
+ - "Α-Ω": 
+    - test: 
+        if: "$CapitalLetters_Beep"
+        then:
+        - audio:
+            value: "beep.mp4"
+            replace: []
+    - test: 
+        if: "$CapitalLetters_UseWord"
+        then_test:
+          if: "$SpeechOverrides_CapitalLetters = ''"
+          then_test:
+            if: "$Impairment = 'Blindness'"
+            then: [T: "大写"]    # (en: 'cap')
+          else: [x: "$SpeechOverrides_CapitalLetters"] 
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
+        replace: [spell: "translate('.', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ', 'αβγδεζηθικλμνξοπρςστυφχψω')"]
+
+ - "α": [t: "alpha"]                               # 0x3b1
+ - "β": [t: "beta"]                                # 0x3b2
+ - "γ": [t: "gamma"]                               # 0x3b3
+ - "δ": [t: "delta"]                               # 0x3b4
+ - "ε": [t: "epsilon"]                             # 0x3b5
+ - "ζ": [t: "zeta"]                                # 0x3b6
+ - "η": [t: "eta"]                                 # 0x3b7
+ - "θ": [t: "theta"]                               # 0x3b8
+ - "ι": [t: "iota"]                                # 0x3b9
+ - "κ": [t: "kappa"]                               # 0x3ba
+ - "λ": [t: "lambda"]                               # 0x3bb
+ - "μ": [t: "mu"]                                  # 0x3bc
+ - "ν": [t: "nu"]                                  # 0x3bd
+ - "ξ": [t: "zai"]                                 # 0x3be
+ - "ο": [t: "omicron"]                             # 0x3bf
+ - "π": [t: "pi"]                                  # 0x3c0
+ - "ρ": [t: "rho"]                                 # 0x3c1
+ - "ς": [T: "词末 sigma"]    # 0x3c2 (en: 'final sigma')
+ - "σ": [t: "sigma"]                               # 0x3c3
+ - "τ": [t: "tau"]                                 # 0x3c4
+ - "υ": [t: "upsilon"]                             # 0x3c5
+ - "φ": [t: "phi"]                                 # 0x3c6
+ - "χ": [t: "chi"]                                 # 0x3c7
+ - "ψ": [t: "psi"]                                 # 0x3c8
+ - "ω": [t: "omega"]                               # 0x3c9
+ - "ϕ": [T: "phi 号"]    # 0x3d5
+ - "ϖ": [T: "pi 号"]    # 0x3d6
+ - "ϵ": [T: "弧 epsilon"]    # 0x3f5
+ - "϶": [T: "反 epsilon"]    # 0x3f6 (en: 'reversed epsilon')
+
+ - "–": [T: "连号"]    # 0x2013
+ - "—": [T: "破折号"]    # 0x2014
+ - "―": [T: "横线"]    # 0x2015 (en: 'horizontal bar')
+ - "‖": [T: "双竖线"]    # 0x2016 (en: 'double vertical line')
+ - "…":                                          # 0x2026
+    test:
+        if:
+            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
+               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
+               # speak '…' as 'and so on...' unless expr starts with '…'
+            - "../*[1][.='…']"
+        then: [T: "点点点"]    # (en: 'dot dot dot')
+        else_test:  # must have $ClearSpeak_Ellipses = 'AndSoOn'
+            if: "count(following-sibling::*) = 0"
+            then: [T: "等等"]    # (en: 'and so on')
+            else: [T: "以此类推，直至"]    # (en: 'and so on up to')
+
+ - "⁡":                                          # 0x2061
+    - test:
+        # skip saying "of" when Terse and a trig function, when it is a shape (does this happen?), or we are in :literal mode
+        if: "not(
+              ( $Verbosity='Terse' or ($SpeechStyle = 'ClearSpeak' and IsNode(following-sibling::*[1],'simple')) and
+                preceding-sibling::*[1][IfThenElse($SpeechStyle='ClearSpeak',
+                                                   IsInDefinition(., 'ClearSpeakTrigFunctionNames'),
+                                                   IsInDefinition(., 'TrigFunctionNames') )]
+              ) or
+              preceding-sibling::*[1][IsInDefinition(., 'GeometryShapes')] or
+              (@data-changed='added' and ancestor-or-self::*[contains(@data-intent-property, ':literal:')])
+            )"
+        then_test:
+          if: "$Verbosity != 'Verbose'"
+          then: [T: ""]
+          else: [T: "关于"]    # (en: 'of')
+
+ - "⁢": [t: ""]                                   # 0x2062
+ - "⁣": [t: ""]                                   # 0x2063
+ - "⁤": [T: "又"]    # 0x2064 (en: 'and')
+ - "′": [T: "丿"]    # 0x2032 (en: 'prime')
+ - "″": [T: "双丿"]    # 0x2033 (en: 'double prime')
+ - "‴": [T: "三丿"]    # 0x2034 (en: 'triple prime')
+
+ - "ℂℕℚℝℤ":     # here we rely on this running through the table again to speak "cap xxx"
+    - T: "双线"    # (en: 'double-struck')
+    - spell: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
+
+ - "℃": [T: "攝氏度"]    # 0x2103 (en: 'degrees celsius')
+ - "℉": [T: "华氏度"]    # 0x2109 (en: 'degrees fahrenheit')
+ - "ℋℛℓ":                                          # 0x210b
+    - T: "手写"    # (en: 'script')
+    - spell: "translate('.', 'ℋℛℓ', 'HRl')"
+ - "ℎ": [T: "普朗克常数"]    # 0x210e (en: 'planck constant')
+ - "ℜ":                                          # 0x211c
+    - T: "德文花体"    # (en: 'fraktur')
+    - spell: "'R'"
+
+ - "Ω": [T: "欧姆"]    # 0x2126 (en: 'ohms')
+ - "K": [T: "开尔文"]    # 0x212a	(en: 'kelvin')
+ - "Å": [T: "埃"]    # 0x212b (en: 'angstroms')
+ - "ⅆⅇⅈⅉ":                                          # 0x2146-9
+    - T: "双线斜体"                # 	(en: 'double-struck italic')
+    - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
+
+ - "←": [T: "左箭头"]    # 0x2190 (en: 'leftwards arrow')
+ - "↑": [T: "上箭头"]    # 0x2191 (en: 'upwards arrow')
+ - "→":                                          # 0x2192
+     - test:
+        if: "ancestor::*[2][self::m:limit]"
+        then: [T: "趋近于"]    # (en: 'approaches')
+        else: [T: "右箭頭"]    # (en: 'right arrow')
+
+ - "↓": [T: "下箭头"]    # 0x2193 (en: 'downwards arrow')
+ - "⇒": [T: "向右双箭头"]    # 0x21d2 (en: 'rightwards double arrow')
+ - "∀": [T: "任意"]    # 0x2200 (en: 'for all')
+ - "∂":                                          # 0x2202
+     - test: 
+         if: "$Verbosity='Terse'"
+         then: [T: "偏"]    # (en: 'partial')
+         else: [T: "偏导数"]    # (en: 'partial derivative')
+ - "∃": [T: "存在"]    # 0x2203 (en: 'there exists')
+ - "∄": [T: "不存在"]    # 0x2204 (en: 'there does not exist')
+ - "∅": [T: "空集"]    # 0x2205 (en: 'empty set')
+ - "∆":                                          # 0x2206
+     - T: "拉普拉斯算子"     # (en: 'the laplacian of')
+ - "∇":                        #  0x2207
+     - T: "梯度"    # (en: 'the gradient of')
+ - "∈":                                          # 0x2208
+     - T: "属于"    # (en: 'belongs to')
+ - "∉":                                          # 0x2209
+     - T: "不属于"    # (en: 'does not belong to')
+ - "∊":                                          # 0x220a
+     - T: "属于"    # (en: 'belongs to')
+ - "∏": [T: "乘积"]    # 0x220f (en: 'product')
+ - "∐": [T: "余积"]    # 0x2210 (en: 'co-product')
+ - "∑": [T: "求和"]    # 0x2211 (en: 'sum')
+ - "−": [T: "减去"]    # 0x2212 (en: 'minus')
+ - "∓": [T: "减加"]    # 0x2213 (en: 'minus or plus')
+ - "∗": [T: "星乘"]    # 0x2217 (en: 'times')
+ - "∘": [T: "复合"]    # 0x2218 (en: 'composed with')
+ - "√":                                          # 0x221a
+     - T: "根号"    # (en: 'the square root of')
+ - "∝":                                          # 0x221d
+     - T: "正比于"    # (en: 'is proportional to')
+ - "∞": [T: "无穷大"]    # 0x221e (en: 'infinity')
+ - "∟": [T: "直角"]    # 0x221f (en: 'right angle')
+ - "∠": [T: "角"]    # 0x2220 (en: 'angle')
+ - "∡": [T: "测角"]    # 0x2221 (en: 'measured angle')
+ - "∣": [T: "整除"]    # 0x2223 (en: 'divides')
+ - "∤": [T: "不可整除"]    # 0x2224 (en: 'does not divide')
+ - "∥":                                           # 0x2225
+     - test:
+         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+         then: [T: "平行线"]    # (en: 'double vertical line')
+         else:
+         - T: "平行于"    # (en: 'is parallel to')
+ - "∦":                                           # 0x2226
+     - T: "不平行于"    # (en: 'is not parallel to')
+ - "∧": [T: "且"]    # 0x2227 (en: 'and')
+ - "∨": [T: "或"]    #  0x2228 (en: 'or')
+ - "∩": [T: "交"]    # 0x2229 (en: 'intersection')
+ - "∪": [T: "并"]    # 0x222a (en: 'union')
+ - "∫": [T: "积分"]    # 0x222b (en: 'integral')
+ - "∬": [T: "二重积分"]    # 0x222c (en: 'double integral')
+ - "∭": [T: "三重积分"]    # 0x222d (en: 'triple integral')
+ - "∮": [T: "围道积分"]     # 0x222e (en: 'contour integral')
+ - "∶":                                          # 0x2236
+     - T: "比"    # (en: 'is to')
+ - "∷": [T: "比例"]    # 0x2237 (en: 'as')
+ - "∼": [T: "相似于"]    # 0x223c (en: 'varies with')
+ - "∽": [T: "反向波浪线"]    # 0x223d (en: 'reversed tilde')
+ - "∾":                                          # 0x223e
+     - T: "竖翻躺倒 S"    # (en: 'is most positive')
+ - "∿": [T: "正弦曲线"]    # 0x223f (en: 'sine wave')
+ - "≠":                                          # 0x2260
+     - T: "不等于"    # (en: 'is not equal to')
+ - "≡":                                          # 0x2261
+     - T: "恒等于"    # (en: 'is identical to')
+ - "≤":                                          # 0x2264
+     - T: "小于或等于"    # (en: 'is less than or equal to')
+ - "≥":                                          # 0x2265
+     - T: "大于或等于"    # (en: 'is greater than or equal to')
+ - "≦": [T: "小于等于"]    # 0x2266 (en: 'less than over equal to')
+ - "≧": [T: "大于等于"]    # 0x2267 (en: 'greater than over equal to')
+ - "≺": [T: "先于"]    # 0x227a (en: 'precedes')
+ - "≻": [T: "后于"]    # 0x227b (en: 'succeeds')
+ - "⊂":                                          # 0x2282
+     - T: "含于"    # (en: 'is a subset of')
+ - "⊃":                                          # 0x2283
+     - T: "包含"    # (en: 'is a superset of')
+ - "⊄":                                          # 0x2284
+     - T: "不含于"    # (en: 'is not a subset of')
+ - "⊅":                                          # 0x2285
+     - T: "不包含"    # (en: 'is not a superset of')
+ - "⊆":                                          # 0x2286
+     - T: "包含于"    # (en: 'is subset of or equal to')
+ - "⊇":                                          # 0x2287
+     - T: "包含或相等"    # (en: 'is superset of or equal to')
