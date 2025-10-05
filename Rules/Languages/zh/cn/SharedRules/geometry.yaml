@@ -1,0 +1,62 @@
+---
+
+- name: line-segment
+  tag: line-segment
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: "线段从"    # phrase('线段从' A 到 B)
+      - x: "*[1]"
+      - T: "到"    # phrase(线段从 A '到' B)
+      - x: "*[2]"
+      else:
+      - T: "线段"    # phrase('线段' A B)
+      - x: "*[1]"
+      - x: "*[2]"
+
+- name: geometry-ray
+  tag: ray
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: "射线从"    # phrase('射线从' A 到 B)
+      - x: "*[1]"
+      - T: "到"    # phrase(射线从 A '到' B)
+      - x: "*[2]"
+      else:
+      - T: "射线"    # phrase('射线'A  B)
+      - x: "*[1]"
+      - x: "*[2]"
+
+- name: geometry-arc
+  tag: arc
+  match: "count(*)=2"
+  replace:
+  - T: "弧"    # phrase('弧' A B)
+  - x: "*[1]"
+  - x: "*[2]"
+
+- name: measure-of-angle
+  tag: measure-of-angle
+  match: "count(*)=3"
+  replace:
+  - T: "测角"    # phrase('测角' ABC)
+  - x: "*[1]"
+  - x: "*[2]"
+  - x: "*[3]"
+
+
+- name: coordinate
+  tag: coordinate
+  match: "."
+  replace:
+  - T: "点"    # phrase('点' 1 逗号, 2)
+  - pause: short
+  - insert:
+      nodes: "*"
+      replace: [T: "逗号", pause: auto]    # phrase(点 x '逗号', y)
+  - pause: medium
